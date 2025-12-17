@@ -166,7 +166,7 @@ function Dashboard({ moderator, onLogout }) {
           
           <div className="flex gap-3 mb-6 flex-wrap">
             <div className="flex-1 min-w-[250px] relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400">🔍</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400"></span>
               <input
                 type="text"
                 value={searchQuery}
