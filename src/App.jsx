@@ -9,58 +9,29 @@ function App() {
   const [moderator, setModerator] = useState(null);
 
   useEffect(() => {
-    checkAuth();
+    api.get('/api/check-auth')
+      .then(res => { setIsAuth(true); setModerator(res.data); })
+      .catch(() => setIsAuth(false));
   }, []);
 
-  const checkAuth = async () => {
-    try {
-      const res = await api.get('/api/check-auth');
-      setIsAuth(true);
-      setModerator(res.data);
-    } catch {
-      setIsAuth(false);
-    }
-  };
-
-  const handleLogin = (data) => {
-    setIsAuth(true);
-    setModerator(data);
-  };
-
+  const handleLogin = (data) => { setIsAuth(true); setModerator(data); };
+  
   const handleLogout = async () => {
     await api.post('/api/logout');
     setIsAuth(false);
     setModerator(null);
   };
 
-  if (isAuth === null) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 flex items-center justify-center">
-        <div className="text-center animate-fade-in">
-          <div className="w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg">
-            <span className="text-3xl">📊</span>
-          </div>
-          <p className="text-slate-600 text-lg font-medium">Yuklanmoqda...</p>
-          <div className="mt-4 flex justify-center gap-1">
-            <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0s' }}></div>
-            <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-            <div className="w-2 h-2 bg-indigo-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  if (isAuth === null) return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50 flex items-center justify-center">
+      <p className="text-slate-600 text-lg">Yuklanmoqda...</p>
+    </div>
+  );
 
   return (
     <Routes>
-      <Route 
-        path="/" 
-        element={isAuth ? <Navigate to="/dashboard" /> : <Login onLogin={handleLogin} />} 
-      />
-      <Route 
-        path="/dashboard" 
-        element={isAuth ? <Dashboard moderator={moderator} onLogout={handleLogout} /> : <Navigate to="/" />} 
-      />
+      <Route path="/" element={isAuth ? <Navigate to="/dashboard" /> : <Login onLogin={handleLogin} />} />
+      <Route path="/dashboard" element={isAuth ? <Dashboard moderator={moderator} onLogout={handleLogout} /> : <Navigate to="/" />} />
     </Routes>
   );
 }
